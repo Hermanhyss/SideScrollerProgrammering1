@@ -1,78 +1,78 @@
 using System.Collections;
 using System.Collections.Generic;
+using TreeEditor;
 using UnityEngine;
 
-
-
-
-public class UnityController : MonoBehaviour
+public enum Characterstate
 {
-    public Rigidbody2D Myrigidbody = null;
+ Ground = 0,
+ Airbone = 1,
+ Jumping = 2,
+ Total
+}
+public class PhysicsCharacterController : MonoBehaviour
+{
+    //Refrence to rigidbody on same object
+    public Rigidbody2D myRigidBody = null;
 
-    public CharacterState JumpingState = CharacterState.Airborne; // är karaktären på marken eller i luften?
+    public CharacterState JumpingState = CharacterState.Airborne;
+    //Is Our character on the ground or in the air?
 
+    //Gravity
+    public float GravityPerSecond = 160.0f; //Falling Speed
+    public float GroundLevel = 0.0f; //Ground Value
 
-
-    public float MovementSpeedPerSecond = 10.0f; // gå
-    public float GravityPerSecond = 140.0f; // falla
-   
-
-    //hoppa
-    public float JumpSpeedFactor = 3.0f; // Hur mycket snabbare hoppet är
-    public float JumpMaxHeight = 150;
+    //Jump
+    public float JumpSpeedFactor = 3.0f; //How much faster is the jump than the movespeed?
+    public float JumpMaxHeight = 150.0f;
+    [SerializeField]
     private float JumpHeightDelta = 0.0f;
 
-    // Update is called once per frame
-    void FixedUpdate()
-      
-    {
-        Vector3 characterVelocity = Myrigidbody.velocity;
-        characterVelocity.x = 0.0f;
-        characterVelocity.y = 0.0f;
+    //Movement
+    public float MovementSpeedPerSecond = 10.0f; //Movement Speed
 
-if (JumpingState != CharacterState.Jumping)
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.W) && JumpingState == CharacterState.Grounded)
         {
-            JumpingState = CharacterState.Grounded;
+            JumpingState = CharacterState.Jumping; //Set character to jumping
+            JumpHeightDelta = 0.0f; //Restart Counting Jumpdistance
         }
-         
-       
-            
-            if (Input.GetKey(KeyCode.W) && JumpingState == CharacterState.Grounded)
-        {
-            JumpingState = CharacterState.Jumping;
-            JumpHeightDelta = 0.0f;
-        }
+    }
+
+
+    void FixedUpdate()
+    {
+        Vector3 characterVelocity = myRigidBody.velocity;
+        characterVelocity.x = 0.0f;
 
         if (JumpingState == CharacterState.Jumping)
         {
             float totalJumpMovementThisFrame = MovementSpeedPerSecond * JumpSpeedFactor;
-            characterVelocity.y += totalJumpMovementThisFrame;
-           
-            JumpHeightDelta += totalJumpMovementThisFrame;
+            characterVelocity.y = totalJumpMovementThisFrame;
+
+            JumpHeightDelta += totalJumpMovementThisFrame * Time.deltaTime;
+
             if (JumpHeightDelta >= JumpMaxHeight)
             {
                 JumpingState = CharacterState.Airborne;
                 JumpHeightDelta = 0.0f;
                 characterVelocity.y = 0.0f;
             }
-         }
+        }
 
-        if (Input.GetKey(KeyCode.A)) // vänster
+        //Left
+        if (Input.GetKey(KeyCode.A))
         {
-            
             characterVelocity.x -= MovementSpeedPerSecond;
-   
         }
-        if (Input.GetKey(KeyCode.D)) // höger
+        //Right
+        if (Input.GetKey(KeyCode.D))
         {
-            
-            characterVelocity.x += MovementSpeedPerSecond;  
+            characterVelocity.x += MovementSpeedPerSecond;
         }
-        Myrigidbody.velocity = characterVelocity;
-        {
-       
-         
-        }
+        myRigidBody.velocity = characterVelocity;
+
     }
 }
-
