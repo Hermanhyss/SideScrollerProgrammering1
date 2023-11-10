@@ -8,22 +8,19 @@ public class Mob : MonoBehaviour
 {
     public Rigidbody2D myRigidBody = null;
 
-    public float MovmentSpeedPersecond = 10;
+    public float MovmentSpeedPersecond = 10.0f;
     // Start is called before the first frame update
-   
-        void Start()
-    {
-        
-    }
+    public float MovementSign = 1.0f;
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         Vector3 charcterVelocity = myRigidBody.velocity;
 
         charcterVelocity.x = 0;
 
-        charcterVelocity += MovmentSpeedPersecond * transform.right.normalized;
+        charcterVelocity += MovementSign * MovmentSpeedPersecond * transform.right.normalized;
+        myRigidBody.velocity = charcterVelocity; 
+
         myRigidBody.velocity = charcterVelocity;
      }
 }

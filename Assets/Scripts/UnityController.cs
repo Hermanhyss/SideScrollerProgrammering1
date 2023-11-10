@@ -12,6 +12,8 @@ public enum Characterstate
 }
 public class PhysicsCharacterController : MonoBehaviour
 {
+    public List<Sprite> CharacterSprite = new List<Sprite>();
+    public int HP = 0;
     //Refrence to rigidbody on same object
     public Rigidbody2D myRigidBody = null;
 
