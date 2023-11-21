@@ -11,7 +11,7 @@ public enum Characterstate
  Total
 }
 public class PhysicsCharacterController : MonoBehaviour
-{ 
+{
     public List<Sprite> CharacterSprite = new List<Sprite>();
     public int HP = 0;
     //Refrence to rigidbody on same object
@@ -36,6 +36,15 @@ public class PhysicsCharacterController : MonoBehaviour
     public SpriteRenderer mySpriteRender = null;
     private void Update()
     {
+        if (HP <= 0)
+        { 
+        Scenesloader MySceneLoader = gameObject .GetComponent<Scenesloader>();
+            if (MySceneLoader != null )
+            {
+                MySceneLoader.LoadScene("Game Over");
+            }
+        }
+
         int hpCopy = HP - 1;
 
         if (hpCopy < 0)
@@ -46,16 +55,19 @@ public class PhysicsCharacterController : MonoBehaviour
         {
             hpCopy = CharacterSprite.Count - 1;
         }
-      
+
         mySpriteRender.sprite = CharacterSprite[HP];
 
 
-        
+
+
         if (Input.GetKeyDown(KeyCode.W) && JumpingState == CharacterState.Grounded)
         {
             JumpingState = CharacterState.Jumping; //Set character to jumping
             JumpHeightDelta = 0.0f; //Restart Counting Jumpdistance
+
         }
+
     }
 
 
@@ -92,4 +104,5 @@ public class PhysicsCharacterController : MonoBehaviour
         myRigidBody.velocity = characterVelocity;
 
     }
+   
 }
